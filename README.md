@@ -1,7 +1,7 @@
 
 
 This repo shows a simple case to use the CMake to build the Margo example.
-There are three typical networking patterns to run the server program.
+There are three typical networking patterns to run the server program. 
 
 ```
 zw241@slepner087:~/cworkspace/build/build_margoexp$ ./margoserver verbs://
@@ -15,6 +15,8 @@ zw241@slepner087:~/cworkspace/build/build_margoexp$ ./margoserver na+sm://
 ```
 
 ### How to config the Spack env for Mochi project
+
+Before compiling the project by CMake, it is necessary to install the Spack and configure the Mochi project according to the following document:
 
 https://xgitlab.cels.anl.gov/sds/mochi-boot-camp/blob/master/anl-2019/sessions/s2-hands-on/README.md
 
