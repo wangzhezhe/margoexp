@@ -14,7 +14,7 @@ zw241@slepner087:~/cworkspace/build/build_margoexp$ ./margoserver na+sm://
 # accepting RPCs on address "na+sm://7985/0"
 ```
 
-### How to config the Spack env for Mochi project
+### How to configure the Spack env for Mochi project
 
 Before compiling the project by CMake, it is necessary to install the Spack and configure the Mochi project according to the following document:
 
