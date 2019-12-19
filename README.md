@@ -1,7 +1,7 @@
 
 
-This repo shows a simple case to use the CMake to build the Margo use case.
-There are three typical message communication patterns to run the server program.
+This repo shows a simple case to use the CMake to build the Margo example.
+There are three typical networking patterns to run the server program.
 
 ```
 zw241@slepner087:~/cworkspace/build/build_margoexp$ ./margoserver verbs://
@@ -27,3 +27,8 @@ https://xgitlab.cels.anl.gov/sds/mochi-boot-camp/blob/master/anl-2019/sessions/s
 This repo contains all the necessary introduction about the Mochi projects:
 
 https://xgitlab.cels.anl.gov/sds/mochi-boot-camp/tree/master/anl-2019
+
+This is the repo of the margo project:
+
+https://xgitlab.cels.anl.gov/sds/margo
+
