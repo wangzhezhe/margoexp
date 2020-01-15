@@ -85,6 +85,7 @@ static void my_rpc_ult(hg_handle_t handle)
 
     return;
 }
+
 DEFINE_MARGO_RPC_HANDLER(my_rpc_ult)
 
 static void my_rpc_shutdown_ult(hg_handle_t handle)
