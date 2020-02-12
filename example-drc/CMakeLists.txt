@@ -13,7 +13,6 @@ find_package (mercury REQUIRED)
 include_directories(${MERCURY_INCLUDE_DIR})
 xpkg_import_module (argobots REQUIRED argobots)
 xpkg_import_module (margo REQUIRED margo)
-xpkg_import_module (abtio REQUIRED abt-io)
 
 find_package(DRC REQUIRED)
 include_directories(${DRC_INCLUDE_DIRS})

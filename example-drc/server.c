@@ -6,6 +6,17 @@
 #include <margo.h>
 #include <stdlib.h>
 #include <string.h>
+#include <rdmacred.h>
+
+#define DIE_IF(cond_expr, err_fmt, ...)                                                                           \
+    do                                                                                                            \
+    {                                                                                                             \
+        if (cond_expr)                                                                                            \
+        {                                                                                                         \
+            fprintf(stderr, "ERROR at %s:%d (" #cond_expr "): " err_fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+            exit(1);                                                                                              \
+        }                                                                                                         \
+    } while (0)
 
 static int num_rpcs = 0;
 static int TOTAL_RPCS = 5;
@@ -23,33 +34,28 @@ int main(int argc, char **argv)
         return (-1);
     }
     uint32_t drc_credential_id;
-
-
-            ret = drc_acquire(&drc_credential_id, DRC_FLAGS_FLEX_CREDENTIAL);
-            DIE_IF(ret != DRC_SUCCESS, "drc_acquire");
-
-
-
-
-
-
-
-
-
-
+    drc_info_handle_t drc_credential_info;
+    uint32_t drc_cookie;
+    char drc_key_str[256] = {0};
+    int ret;
 
     struct hg_init_info hii;
     memset(&hii, 0, sizeof(hii));
-    char drc_key_str[256] = {0};
-    uint32_t drc_cookie;
 
-    drc_cookie = (uint32_t)atoi(argv[2]);
-    printf("use the drc_cookie %ld\n", drc_cookie);
+    ret = drc_acquire(&drc_credential_id, DRC_FLAGS_FLEX_CREDENTIAL);
+    DIE_IF(ret != DRC_SUCCESS, "drc_acquire");
 
+    ret = drc_access(drc_credential_id, 0, &drc_credential_info);
+    DIE_IF(ret != DRC_SUCCESS, "drc_access");
+    drc_cookie = drc_get_first_cookie(drc_credential_info);
     sprintf(drc_key_str, "%u", drc_cookie);
     hii.na_init_info.auth_key = drc_key_str;
+
+    ret = drc_grant(drc_credential_id, drc_get_wlm_id(), DRC_FLAGS_TARGET_WLM);
+    DIE_IF(ret != DRC_SUCCESS, "drc_grant");
+
+    printf("grant the drc_credential_id: %d\n", drc_credential_id);
     printf("use the drc_key_str %s\n", drc_key_str);
-    fflush(stdout);
 
     margo_instance_id mid;
     mid = margo_init_opt(argv[1], MARGO_SERVER_MODE, &hii, 0, -1);
