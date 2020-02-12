@@ -5,6 +5,7 @@ This repo shows some simple cases to use the CMake to build the Margo example.
 This example send a simple string to the server and there is no response from the server
 
 the server:
+
 ```
 zw241@amarel2:~/cworkspace/src/margoexp/example-helloworld/build$ ./margoserver tcp://
 Server running at address ofi+tcp;ofi_rxm://192.168.34.22:39859

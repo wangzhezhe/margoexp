@@ -5,7 +5,11 @@
 
 int main(int argc, char** argv)
 {
-    
+        if (argc != 3)
+    {
+        fprintf(stderr, "Usage: ./server <gniaddr> <drc_cookie>\n");
+        return (-1);
+    }
     //init
     char *proto;
     char *colon;
@@ -26,7 +30,21 @@ int main(int argc, char** argv)
      * rpc requests.
      */
     /***************************************/
-    mid = margo_init(proto, MARGO_CLIENT_MODE, 0, 0);
+    struct hg_init_info hii;
+    memset(&hii, 0, sizeof(hii));
+    char drc_key_str[256] = {0};
+    uint32_t drc_cookie;
+
+
+
+    drc_cookie = (uint32_t)atoi(argv[2]);
+
+    sprintf(drc_key_str, "%u", drc_cookie);
+    hii.na_init_info.auth_key = drc_key_str;
+    printf("use the drc_key_str %s\n", drc_key_str);
+    fflush(stdout);
+
+    mid = margo_init_opt(argv[1], MARGO_SERVER_MODE, &hii, 0, -1);
     free(proto);
     if(mid == MARGO_INSTANCE_NULL)
     {

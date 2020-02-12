@@ -4,6 +4,8 @@
 #include <mercury.h>
 #include <abt.h>
 #include <margo.h>
+#include <stdlib.h>
+#include <string.h>
 
 static int num_rpcs = 0;
 static int TOTAL_RPCS = 5;
@@ -15,25 +17,34 @@ int main(int argc, char **argv)
 {
 
     //the stage of the initialization
-    if (argc != 3)
+    if (argc != 2)
     {
-        fprintf(stderr, "Usage: ./server <protocol> <drc_cookie>\n");
+        fprintf(stderr, "Usage: ./server <protocol> \n");
         return (-1);
     }
+    uint32_t drc_credential_id;
+
+
+            ret = drc_acquire(&drc_credential_id, DRC_FLAGS_FLEX_CREDENTIAL);
+            DIE_IF(ret != DRC_SUCCESS, "drc_acquire");
+
+
+
+
+
+
+
+
+
+
+
     struct hg_init_info hii;
     memset(&hii, 0, sizeof(hii));
     char drc_key_str[256] = {0};
-    uint32_t drc_credential_id;
+    uint32_t drc_cookie;
 
-    drc_credential_id = (uint32_t)stoi(argv[1]);
-    printf("use the drc_credential_id %s\n", drc_credential_id);
-
-    /* access credential and covert to string for use by mercury */
-    ret = drc_access(drc_credential_id, 0, &drc_credential_info);
-    DIE_IF(ret != DRC_SUCCESS, "drc_access %u %ld", drc_credential_id, ssg_cred);
-    drc_cookie = drc_get_first_cookie(drc_credential_info);
-    sprintf(drc_key_str, "%u", drc_cookie);
-    hii.na_init_info.auth_key = drc_key_str;
+    drc_cookie = (uint32_t)atoi(argv[2]);
+    printf("use the drc_cookie %ld\n", drc_cookie);
 
     sprintf(drc_key_str, "%u", drc_cookie);
     hii.na_init_info.auth_key = drc_key_str;

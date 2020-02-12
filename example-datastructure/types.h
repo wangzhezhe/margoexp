@@ -12,6 +12,6 @@ MERCURY_GEN_PROC(sum_in_t,
         ((int32_t)(x))\
         ((int32_t)(y)))
 
-MERCURY_GEN_PROC(sum_out_t, ((int32_t)(ret)))
+MERCURY_GEN_PROC(spx_update_out, ((int32_t)(ret)))
 
 #endif
