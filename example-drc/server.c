@@ -59,6 +59,7 @@ int main(int argc, char **argv)
 
     margo_instance_id mid;
     mid = margo_init_opt(argv[1], MARGO_SERVER_MODE, &hii, 0, -1);
+    
     if (mid == MARGO_INSTANCE_NULL)
     {
         fprintf(stderr, "Error: margo_init()\n");
