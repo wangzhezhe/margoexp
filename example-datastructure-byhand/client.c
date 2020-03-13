@@ -45,7 +45,7 @@ void testrawobj1(char *addr_str)
 
     printf("---testrawobj1---\n");
 
-    hg_id_t bbx_rpc_id = MARGO_REGISTER(global_id, "spx_update", obj_in_t, obj_out_t, NULL);
+    hg_id_t bbx_rpc_id = MARGO_REGISTER(global_id, "testbbx", obj_in_t, obj_out_t, NULL);
 
     hg_addr_t svr_addr;
     margo_addr_lookup(global_id, addr_str, &svr_addr);
@@ -80,7 +80,85 @@ void testrawobj1(char *addr_str)
     margo_get_output(h, &resp);
 
     printf("Got response: %d\n", resp.ret);
+    fflush(stdout);
+    margo_free_output(h, &resp);
+    margo_destroy(h);
 
+    margo_addr_free(global_id, svr_addr);
+}
+
+void testobjlist(char *addr_str)
+{
+
+    printf("---testobjlist---\n");
+
+    hg_id_t bbx_rpc_id = MARGO_REGISTER(global_id, "test_objlist", objlist_in_t, objlist_out_t, NULL);
+
+    hg_addr_t svr_addr;
+    margo_addr_lookup(global_id, addr_str, &svr_addr);
+
+    //init array
+    objlist_in_t objlist_in_header;
+    obj_list_entry_ptr prev = NULL;
+    int i,j;
+    for (i = 0; i < 10; i++)
+    {
+
+        bbx_t *bbx = (bbx_t *)malloc(sizeof(bbx_t));
+        bbx->m_dims = 3;
+        int j;
+        for (j = 0; j < DEFAULT_MAX_DIM; j++)
+        {
+
+            bbx->m_lb[j] = 0;
+            bbx->m_ub[j] = 0;
+        }
+
+        for (j = 0; j < 3; j++)
+        {
+
+            bbx->m_lb[j] = i;
+            bbx->m_ub[j] = 1 + i;
+        }
+
+        obj_list_entry_ptr entry_value = (obj_list_entry_ptr)malloc(sizeof(struct obj_list_entry));
+
+        entry_value->next = NULL;
+        entry_value->value.size = sizeof(bbx_t);
+        entry_value->value.raw_obj = (char *)bbx;
+
+        if (i == 0)
+        {
+            objlist_in_header.obj_list=entry_value;
+            prev=entry_value;
+            continue;
+        }
+
+        prev->next = entry_value;
+        prev = entry_value;
+    }
+
+    hg_handle_t h;
+    margo_create(global_id, svr_addr, bbx_rpc_id, &h);
+
+    //check the input
+    obj_list_entry_ptr currentry = objlist_in_header.obj_list;
+    int id = 0;
+    while (currentry != NULL)
+    {
+        fprintf(stdout, "id %d\n", id);
+        printbbx((bbx_t *)currentry->value.raw_obj);
+        id++;
+        currentry = currentry->next;
+    }
+
+    margo_forward(h, &objlist_in_header);
+
+    obj_out_t resp;
+    margo_get_output(h, &resp);
+
+    printf("Got response: %d\n", resp.ret);
+    fflush(stdout);
     margo_free_output(h, &resp);
     margo_destroy(h);
 
@@ -95,11 +173,13 @@ int main(int argc, char **argv)
         exit(0);
     }
 
-    global_id = margo_init("na+sm", MARGO_CLIENT_MODE, 0, 0);
+    global_id = margo_init("tcp", MARGO_CLIENT_MODE, 0, 0);
 
     //testsum(argv[1]);
 
     testrawobj1(argv[1]);
+
+    testobjlist(argv[1]);
 
     margo_finalize(global_id);
 
